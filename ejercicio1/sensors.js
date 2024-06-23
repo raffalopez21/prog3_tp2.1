@@ -12,7 +12,7 @@ class Sensor {
         if (validTypes.includes(type)) {
             this.type = type;
         } else {
-            console.log('Sensor no valido');
+            throw new Error('Tipo de sensor no válido');
         }
     }
     set updateValue(newValue) {
@@ -54,7 +54,22 @@ class SensorManager {
         }
     }
 
-    async loadSensors(url) {}
+    loadSensors(url) {
+        fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(eachSensor => {
+                const {id, name, type, value, unit, updated_at} = eachSensor;
+                const sensor = new Sensor (id, name, type, value, unit, updated_at);
+                this.addSensor(sensor);
+            });
+            this.render();
+        })   
+        .catch(error => {
+            console.error('Error al cargar los sensores:', error);
+        });
+    }
+        
 
     render() {
         const container = document.getElementById("sensor-container");
