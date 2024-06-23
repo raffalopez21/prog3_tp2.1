@@ -1,4 +1,25 @@
-class Sensor {}
+class Sensor {
+    constructor(id, name, type, value, unit, updated_at) {
+        this.id = id;
+        this.name = name;
+        this.setType(type);
+        this.value = value;
+        this.unit = unit;
+        this.updated_at = updated_at;
+    }
+    setType(type) {
+        const validTypes = ["temperature", "humidity", "pressure"];
+        if (validTypes.includes(type)) {
+            this.type = type;
+        } else {
+            console.log('Sensor no valido');
+        }
+    }
+    set updateValue(newValue) {
+        this.value = newValue;
+        this.updated_at = new Date().toISOString();
+    }
+}
 
 class SensorManager {
     constructor() {
