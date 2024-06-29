@@ -1,6 +1,18 @@
-class Customer {}
+class Customer {
+    constructor(id, name, email) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+    }
+
+    info (){
+        cadena = "Su nombre es: "+ this.name + "y su correo es: " + this.email;
+        return cadena;
+    }
+}
 
 class Reservation {}
+    
 
 class Restaurant {
     constructor(name) {
