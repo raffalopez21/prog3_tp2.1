@@ -5,8 +5,8 @@ class Customer {
         this.email = email;
     }
 
-    info (){
-        cadena = "Su nombre es: "+ this.name + "y su correo es: " + this.email;
+    get info (){
+        cadena = "Su nombre es: $(this.name). Su correo es: $(this.email)";
         return cadena;
     }
 }
