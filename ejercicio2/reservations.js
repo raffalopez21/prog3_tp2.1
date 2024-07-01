@@ -22,11 +22,11 @@ class Reservation {
     get info (){
         const fecha = this.date.toLocaleDateString();
         const hora = this.date.toLocaleTimeString();
-        const cadena = `La reserva tiene fecha del ${fecha} a las horas ${hora}. \nLa reserva fue realizada por ${this.name} y cuenta con ${this.guests} comensales`;
+        const cadena = `La reserva tiene fecha del ${fecha} a las ${hora} horas. \nLa reserva fue realizada por ${this.customer.name} y cuenta con ${this.guests} comensales`;
         return cadena
     }
     
-    static validateReservation({date,guests}){
+    static validateReservation(date,guests) {
         const fechaReserva = new Date(date);
         const fechaActual = new Date();
         return fechaReserva > fechaActual && guests > 0;
