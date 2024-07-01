@@ -6,13 +6,32 @@ class Customer {
     }
 
     get info (){
-        cadena = "Su nombre es: $(this.name). Su correo es: $(this.email)";
+        const cadena = `Su nombre es: ${this.name}. Su correo es: ${this.email}`;
         return cadena;
     }
 }
 
-class Reservation {}
+class Reservation {
+    constructor(id, customer, date, guests) {
+        this.id = id;
+        this.customer = customer;
+        this.date = new Date(date);
+        this.guests = guests;
+    }
+
+    get info (){
+        const fecha = this.date.toLocaleDateString();
+        const hora = this.date.toLocaleTimeString();
+        const cadena = `La reserva tiene fecha del ${fecha} a las horas ${hora}. \nLa reserva fue realizada por ${this.name} y cuenta con ${this.guests} comensales`;
+        return cadena
+    }
     
+    static validateReservation({date,guests}){
+        const fechaReserva = new Date(date);
+        const fechaActual = new Date();
+        return fechaReserva > fechaActual && guests > 0;
+    }
+}
 
 class Restaurant {
     constructor(name) {
