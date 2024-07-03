@@ -6,9 +6,17 @@ class Currency {
 }
 
 class CurrencyConverter {
-    constructor() {}
+    constructor(apiUrl, currencies) {
+        this.apiUrl = apiUrl;
+        this.currencies = [];
+    }
 
-    getCurrencies(apiUrl) {}
+    getCurrencies() {
+        fetch ("https://www.frankfurter.app/currencies")
+        .then(response => response.json())
+        .then(data => this.currencies = Object.keys(data))
+        .catch( err => console.error('Error:', err));
+    }
 
     convertCurrency(amount, fromCurrency, toCurrency) {}
 }
