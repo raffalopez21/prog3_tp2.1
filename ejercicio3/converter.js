@@ -22,7 +22,7 @@ class CurrencyConverter {
 
     convertCurrency(amount, fromCurrency, toCurrency) {
         if (fromCurrency.code === toCurrency.code) {
-            const convertedAmount = amount
+            const convertedAmount = parseFloat(amount);
             return convertedAmount;
         } else {
             return fetch(`${this.apiUrl}/latest?base=${fromCurrency.code}&symbols=${toCurrency.code}`)
@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     form.addEventListener("submit", async (event) => {
         event.preventDefault();
 
-        const amount = parseFloat(document.getElementById("amount").value);
+        const amount = document.getElementById("amount").value;
         const fromCurrency = converter.currencies.find(
             (currency) => currency.code === fromCurrencySelect.value
         );
