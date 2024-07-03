@@ -28,11 +28,15 @@ class CurrencyConverter {
             return fetch(`${this.apiUrl}/latest?base=${fromCurrency.code}&symbols=${toCurrency.code}`)
             .then(response => response.json())
             .then(data => {
-                const rates = data.rates;
-                const toRate = rates[toCurrency.code];
-                const convertedAmount = amount * toRate;
-                return convertedAmount;
-            } )
+                const rate = data.rates[toCurrency.code];
+                if (rate !== undefined) {
+                    const convertedAmount = amount * rate;
+                    return convertedAmount;
+                } else {
+                    console.error('Tasa de conversion no encontrada');
+                    return null;
+                }
+            })
             .catch(err => {
                 console.error('Error:', err);
                 return null;
@@ -56,7 +60,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     form.addEventListener("submit", async (event) => {
         event.preventDefault();
 
-        const amount = document.getElementById("amount").value;
+        const amount = parseFloat(document.getElementById("amount").value);
         const fromCurrency = converter.currencies.find(
             (currency) => currency.code === fromCurrencySelect.value
         );
