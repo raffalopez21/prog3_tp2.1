@@ -22,18 +22,21 @@ class CurrencyConverter {
 
     convertCurrency(amount, fromCurrency, toCurrency) {
         if (fromCurrency.code === toCurrency.code) {
-            return amount
+            const convertedAmount = amount
+            return convertedAmount;
         } else {
-            return fetch(`${this.apiUrl}/latest`)
+            return fetch(`${this.apiUrl}/latest?base=${fromCurrency.code}&symbols=${toCurrency.code}`)
             .then(response => response.json())
             .then(data => {
                 const rates = data.rates;
-                const fromRates = rates[fromCurrency.code];
-                const toRates = rates[toCurrency.code];
-                const valorConvertido = (amount / fromRates) * toRates;
-                return valorConvertido;
+                const toRate = rates[toCurrency.code];
+                const convertedAmount = amount * toRate;
+                return convertedAmount;
             } )
-            .catch( err => console.error('Error:', null));
+            .catch(err => {
+                console.error('Error:', err);
+                return null;
+            });
         }
     }
 }
