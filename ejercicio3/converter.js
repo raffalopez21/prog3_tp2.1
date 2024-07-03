@@ -12,13 +12,30 @@ class CurrencyConverter {
     }
 
     getCurrencies() {
-        fetch ("https://www.frankfurter.app/currencies")
+        return fetch(`${this.apiUrl}/currencies`)
         .then(response => response.json())
-        .then(data => this.currencies = Object.keys(data))
+        .then(data => {
+            this.currencies = Object.keys(data).map(code => new Currency(code, data[code])) //convierte cada par clave-valor en un objeto corrency
+        })
         .catch( err => console.error('Error:', err));
     }
 
-    convertCurrency(amount, fromCurrency, toCurrency) {}
+    convertCurrency(amount, fromCurrency, toCurrency) {
+        if (fromCurrency.code === toCurrency.code) {
+            return amount
+        } else {
+            return fetch(`${this.apiUrl}/latest`)
+            .then(response => response.json())
+            .then(data => {
+                const rates = data.rates;
+                const fromRates = rates[fromCurrency.code];
+                const toRates = rates[toCurrency.code];
+                const valorConvertido = (amount / fromRates) * toRates;
+                return valorConvertido;
+            } )
+            .catch( err => console.error('Error:', null));
+        }
+    }
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
