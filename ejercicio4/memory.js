@@ -31,6 +31,18 @@ class Card {
         const cardElement = this.element.querySelector(".card");
         cardElement.classList.remove("flipped");
     }
+
+    toggleFlip(){
+        if (this.isFlipped) {
+            this.#unflip();
+        } else {
+            return this.#flip();
+        }
+    }
+    
+    matches (otherCard) {
+        return this.name === otherCard.name;
+    }
 }
 
 class Board {
@@ -74,6 +86,8 @@ class Board {
             this.onCardClick(card);
         }
     }
+
+    shuffleCards() {}
 }
 
 class MemoryGame {
