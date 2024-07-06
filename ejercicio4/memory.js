@@ -114,6 +114,10 @@ class MemoryGame {
         this.board = board;
         this.flippedCards = [];
         this.matchedCards = [];
+        this.intentos = 0;
+        this.intervalId = null;
+        this.elapsedTime = 0;
+        this.isCronometroRunning = false;
         if (flipDuration < 350 || isNaN(flipDuration) || flipDuration > 3000) {
             flipDuration = 350;
             alert(
@@ -127,6 +131,10 @@ class MemoryGame {
 
     #handleCardClick(card) {
         if (this.flippedCards.length < 2 && !card.isFlipped) {
+            if (!this.isCronometroRunning) {
+                this.toggleCronometro(true);
+                this.isCronometroRunning = true;
+            }
             card.toggleFlip();
             this.flippedCards.push(card);
 
@@ -136,25 +144,69 @@ class MemoryGame {
         }
     }
 
-    checkForMatch(){
+    checkForMatch() {
         const [card1, card2] = this.flippedCards;
+        this.intentos += 1;
         if (card1.matches(card2)) {
-            this.matchedCards.push(this.flippedCards);
+            this.matchedCards.push(...this.flippedCards); 
             this.flippedCards = [];
-        } else {setTimeout(() => {
-            this.flippedCards.forEach(card => card.toggleFlip());
-            this.flippedCards = [];
+            this.addMensajeIntentos(`Intento ${this.intentos}: ¡Pareja encontrada!`);
+            if (this.matchedCards.length === this.board.cards.length) {
+                this.toggleCronometro(false);
+                this.addMensajeIntentos(`Juego completado en ${this.intentos} intentos y ${this.elapsedTime} segundos.`);
+            }
+        } else {
+            setTimeout(() => {
+                this.flippedCards.forEach(card => card.toggleFlip());
+                this.flippedCards = [];
+                this.addMensajeIntentos(`Intento ${this.intentos}: Pareja no coincidente.`);
+            }, this.flipDuration);
         }
-        )
-        }
+    }
+
+    addMensajeIntentos(mensaje) {
+        const mensajesElement = document.getElementById("mensajes-intentos");
+        mensajesElement.innerHTML = '';
+        const nuevoMensaje = document.createElement("div");
+        nuevoMensaje.textContent = mensaje;
+        mensajesElement.appendChild(nuevoMensaje);
     }
 
     resetGame() {
         this.flippedCards = [];
         this.matchedCards = [];
         this.board.reset();
+        this.intentos = 0;
+        this.toggleCronometro(false, true);
+        this.addMensajeIntentos(323``);
+        
+    }
+
+    toggleCronometro(start, reset = false) {
+        const cronometroElement = document.getElementById("cronometro");
+
+        if (reset) {
+            clearInterval(this.intervalId);
+            this.elapsedTime = 0;
+            this.isCronometroRunning = false;
+            cronometroElement.textContent = '00:00';
+            return;
+        }
+
+        if (start) {
+            this.intervalId = setInterval(() => {
+                this.elapsedTime++;
+                const minutes = Math.floor(this.elapsedTime / 60).toString().padStart(2, '0');
+                const seconds = (this.elapsedTime % 60).toString().padStart(2, '0');
+                cronometroElement.textContent = `${minutes}:${seconds}`;
+            }, 1000);
+        } else {
+            clearInterval(this.intervalId);
+        }
     }
 }
+
+
 
 document.addEventListener("DOMContentLoaded", () => {
     const cardsData = [
@@ -176,4 +228,5 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("restart-button").addEventListener("click", () => {
         memoryGame.resetGame();
     });
+
 });
