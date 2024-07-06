@@ -178,7 +178,7 @@ class MemoryGame {
         this.board.reset();
         this.intentos = 0;
         this.toggleCronometro(false, true);
-        this.addMensajeIntentos(323``);
+        this.addMensajeIntentos(``);
         
     }
 
