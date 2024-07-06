@@ -132,7 +132,7 @@ class MemoryGame {
     #handleCardClick(card) {
         if (this.flippedCards.length < 2 && !card.isFlipped) {
             if (!this.isCronometroRunning) {
-                this.toggleCronometro(true);
+                this.startCronometro();
                 this.isCronometroRunning = true;
             }
             card.toggleFlip();
@@ -152,7 +152,7 @@ class MemoryGame {
             this.flippedCards = [];
             this.addMensajeIntentos(`Intento ${this.intentos}: ¡Pareja encontrada!`);
             if (this.matchedCards.length === this.board.cards.length) {
-                this.toggleCronometro(false);
+                this.stopCronometro();
                 this.addMensajeIntentos(`Juego completado en ${this.intentos} intentos y ${this.elapsedTime} segundos.`);
             }
         } else {
@@ -177,32 +177,30 @@ class MemoryGame {
         this.matchedCards = [];
         this.board.reset();
         this.intentos = 0;
-        this.toggleCronometro(false, true);
+        this.resetCronometro();
         this.addMensajeIntentos(``);
         
     }
 
-    toggleCronometro(start, reset = false) {
+    async startCronometro() {
         const cronometroElement = document.getElementById("cronometro");
+        this.intervalId = setInterval(() => {
+            this.elapsedTime++;
+            const minutes = Math.floor(this.elapsedTime / 60).toString().padStart(2, '0');
+            const seconds = (this.elapsedTime % 60).toString().padStart(2, '0');
+            cronometroElement.textContent = `${minutes}:${seconds}`;
+        }, 1000);
+    }
 
-        if (reset) {
-            clearInterval(this.intervalId);
-            this.elapsedTime = 0;
-            this.isCronometroRunning = false;
-            cronometroElement.textContent = '00:00';
-            return;
-        }
+    stopCronometro() {
+        clearInterval(this.intervalId);
+    }
 
-        if (start) {
-            this.intervalId = setInterval(() => {
-                this.elapsedTime++;
-                const minutes = Math.floor(this.elapsedTime / 60).toString().padStart(2, '0');
-                const seconds = (this.elapsedTime % 60).toString().padStart(2, '0');
-                cronometroElement.textContent = `${minutes}:${seconds}`;
-            }, 1000);
-        } else {
-            clearInterval(this.intervalId);
-        }
+    resetCronometro() {
+        clearInterval(this.intervalId);
+        this.elapsedTime = 0;
+        this.isCronometroRunning = false;
+        document.getElementById("cronometro").textContent = '00:00';
     }
 }
 
